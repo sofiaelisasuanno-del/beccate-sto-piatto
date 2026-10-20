@@ -1,1 +1,18 @@
-{"name":"Beccate sto' piatto","short_name":"Sto' piatto","description":"Frigo, ricette, dieta, salute, diario e spesa","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#f3f5f3","theme_color":"#153c2d","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{
+  "name": "LAPAPPA",
+  "short_name": "LAPAPPA",
+  "description": "Ricette vegane stagionali, benessere, diario e bonanza in stile gotico",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#102c21",
+  "theme_color": "#090e0b",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

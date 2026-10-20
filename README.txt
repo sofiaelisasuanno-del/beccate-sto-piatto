@@ -1,21 +1,8 @@
-Beccate sto' piatto v0.6
+LAPAPPA v1.0 — Gothic Edition
 
-Carica nella radice del repository i file:
-index.html, app.js, calendar.js, bonanza.js, sleep.js, wellbeing.js, sw.js, icon.svg, manifest.webmanifest.
+Carica TUTTI i file di questa cartella nella radice del repository GitHub Pages e conferma Commit changes.
+Apri https://sofiaelisasuanno-del.github.io/beccate-sto-piatto/?v=10#home
 
-Funzioni nuove:
-- Rigenerazione individuale e settimanale con esclusione dei pasti scaduti e approvati.
-- Ora limite locale: colazione 10:30; pranzo 14:00; spuntino 17:30; cena 22:00.
-- Approva piatto salva ricetta immutabile nello Storico della bonanza; nello Storico si puo' aggiungere/sostituire solo foto.
-- Diario "Oggi mi sento" con ore e qualità del sonno, descrizioni multiple.
-- Home con andamento del benessere degli ultimi 14 giorni.
-- Niente riferimenti testuali ai marchi dei modelli AI nell'interfaccia.
+Novità: tema gotico forestale con corvo e rovi SVG; archivio incrementato a 1312 varianti stagionali (800 originali + 512 varianti da 32 preparazioni di base di cucina asian market/discount); maggiore priorità a tofu, miso, funghi, riso, zucca, cicoria, avocado; note sulle porzioni di salse dentro le schede.
 
-AVVERTENZE:
-- Dati conservati sul browser locale, NON cifrati. Foto IndexedDB NON incluse nei backup.
-- Le ricette vengono generate da regole statiche, non da un modello generativo online.
-- Punteggi benessere/nutrizione orientativi, non diagnostici.
-- Usa sempre lo stesso browser/dispositivo e non cancellare i dati del sito.
-- Il caricamento su GitHub Pages puo' impiegare alcuni minuti.
-- I pasti approvati restano nel diario, e la foto NON prova il consumo del pasto.
-- Le ore limite usano l'orologio del dispositivo (fuso orario locale).
+Le ricette non hanno calcoli di macro verificati. Alcuni piatti comprendono alimenti salati o processati: controlla le etichette. Non usare la valutazione indicativa come parere medico. Tutti i dati sono locali e non cifrati. Esporta i dati salvati prima di aggiornare; foto/ciclo/calendario non sono inclusi nel backup corrente.

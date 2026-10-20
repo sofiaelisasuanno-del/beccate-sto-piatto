@@ -1,0 +1,31 @@
+/* Gothic forest · mobile-first · no external fonts or trackers. Palette 60 forest / 20 black / 15 antique bronze / 5 ivory. */
+:root{--forest:#102c21;--forest-light:#1c4b35;--black:#090e0b;--bronze:#b5a079;--white:#f3f1ea;--mist:#c5d0c8;--line:#58735e;--shadow:rgba(0,0,0,.3);font-family:Georgia,"Times New Roman",serif!important;color:var(--white)!important;background:var(--forest)!important;color-scheme:dark}
+body{background:radial-gradient(circle at 50% -10%,#326145 0%,#102c21 45%,#090e0b 100%) fixed!important;color:var(--white)!important;min-height:100vh}
+.shell{max-width:920px;border-left:1px solid #b5a0794f;border-right:1px solid #b5a0794f;min-height:100vh;background:#10291fd9;box-shadow:0 0 60px #0008}
+header{background:linear-gradient(135deg,#0a100c,#193a29 60%,#080d09)!important;min-height:155px;position:relative;overflow:hidden;border-bottom:2px solid var(--bronze);padding:23px 100px 35px 20px!important}
+header:before{content:"";position:absolute;right:-8px;top:0;width:126px;height:120px;background:url('raven.svg') center/contain no-repeat;filter:drop-shadow(0 0 8px #000);opacity:.94;pointer-events:none}
+header:after{content:"";position:absolute;bottom:-15px;left:0;width:100%;height:45px;background:url('bramble.svg') center/cover no-repeat;pointer-events:none;opacity:.9}
+header h1{font-size:clamp(25px,5.4vw,39px)!important;line-height:1.13;letter-spacing:.015em!important;color:#f4eee0!important;text-shadow:0 2px 8px #000c}
+header p{color:#dfd1b4!important;font-size:13px!important;line-height:1.5}
+nav{background:#080f0b!important;border-bottom:1px solid var(--bronze);scrollbar-color:#b5a079 #0b190f}
+nav button{font-family:Georgia,serif!important;color:#e6e8df!important;border-radius:3px!important;border:1px solid transparent!important;letter-spacing:.02em}
+nav button.active{background:#234c35!important;color:#f9f1dc!important;border:1px solid var(--bronze)!important}
+main{padding-top:24px!important}
+main>section>h2, main>section>h2:first-child{font-size:clamp(25px,5vw,34px)!important;font-weight:700;color:#e9ddc2!important;letter-spacing:.015em;text-shadow:0 2px 4px #0009}
+h2,h3{font-family:Georgia,serif!important}h3{color:#e3d2ac!important}p{line-height:1.58!important}
+.card{position:relative;background:linear-gradient(155deg,#1d4432,#122a20)!important;border:1px solid #b5a07970!important;border-radius:6px!important;color:var(--white)!important;box-shadow:0 6px 18px var(--shadow)!important}
+.card::before,.metric::before{content:"✦";position:absolute;top:5px;right:9px;color:#b5a07955;font-size:14px;pointer-events:none}
+.metric{position:relative;background:#0e2219!important;border:1px solid #8d896d77;border-radius:5px!important}.metric strong{color:#e5d3ac!important}
+.muted,small,.minicap,footer{color:#c5d0c8!important}label{color:#ebe3d0!important}input,select,textarea{background:#091b13!important;border:1px solid #8da08d!important;color:#f6f3e9!important;border-radius:4px!important}input::placeholder,textarea::placeholder{color:#a4b1a6!important}option{background:#102c21;color:#fff}input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid #d1b880!important;outline-offset:2px}
+button.action{background:#32694a!important;border:1px solid #c0aa7e!important;color:#fff8e7!important;border-radius:4px!important;font-family:Georgia,serif!important;box-shadow:0 3px 0 #07140c!important}button.action.secondary{background:#173b2a!important;color:#f3e8d2!important}button.action.danger{background:#492626!important;border-color:#c39a90!important}button:disabled{opacity:.45!important}
+.pill,.season-chip{background:#1d4631!important;color:#e4d5b3!important;border:1px solid #b5a07955!important;border-radius:4px!important}
+.hint,.inline-note{background:#0b2117!important;border-left:3px solid #b5a079!important;color:#e2e3d7!important;border-radius:3px!important}
+li{border-bottom-color:#a3a48a55!important}footer{background:#080f0b;border-top:1px solid #b5a07955}
+.weekbar .daytab,.daytab{background:#11281d!important;color:#f1e9d7!important;border-color:#a2916c!important;border-radius:4px!important}.daytab.on{background:#3a6b48!important;color:white!important}
+.mealcard{background:#0f281c!important;border-color:#987e5c!important;border-radius:5px!important}.mealcard summary{color:#f2eadd!important}.mealbody{color:#e7ede3!important}.missing{color:#e6c59e!important}
+.qualityTrack{background:#08160f!important}.qualityTrack>div{background:linear-gradient(90deg,#4d7b55,#a7b78b)!important}.scoreBig{color:#e0d0a9!important}.season-wheel{border-color:#b5a079!important}.season-core{background:#112b1f!important;color:#f5e9d4!important}.season-months button{background:#214832!important;color:#f1e4ca!important;border:1px solid #b5a07966}
+#home>h2{margin-top:20px}#home>.grid{margin-top:18px}#seasonalityHome{border-top:3px double #b5a079!important}
+#brandQuote{font-style:italic;color:#d7c49f!important;border-left:2px solid #b5a079;padding-left:12px;margin:8px 0 20px}
+#marketGuide{margin-top:12px}#marketGuide summary{cursor:pointer;font-weight:bold;color:#e6d5b4;padding:5px 0}#marketGuide .season-chip{display:inline-block;margin:3px}
+.sauce-note{background:#2a311f;border-left:3px solid #c5a46b;padding:12px;border-radius:3px;margin:12px 0;font-size:13px;color:#f3e5c7}
+@media(max-width:520px){header{padding-right:90px!important}header:before{width:92px;height:95px}nav button{padding:9px 10px!important}.card{padding:14px!important}main{padding:15px 11px 80px!important}}
