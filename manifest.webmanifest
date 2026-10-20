@@ -1,7 +1,7 @@
 {
   "name": "LAPAPPA",
   "short_name": "LAPAPPA",
-  "description": "LAPAPPA gotica: ricette vegane stagionali, benessere, bonanza e dispensa magica",
+  "description": "LAPAPPA gotica: logo corretto, ricette vegane stagionali, benessere e bonanza",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
