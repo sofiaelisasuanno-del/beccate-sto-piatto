@@ -1,4 +1,4 @@
-const CACHE='bsp-v122';
+const CACHE='bsp-v124';
 const ASSETS=['./','./index.html','./app.js','./calendar.js','./recipes800.js','./recipes_market.js','./gothic.css','./raven.svg','./bramble.svg','./seasonality.js','./cycle.js','./bonanza.js','./sleep.js','./wellbeing.js','./manifest.webmanifest','./icon.svg','./lapappa-logo-v122.png','./lapappa-logo-v122-192.png','./lapappa-logo-v122-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('bsp-')&&key!==CACHE).map(key=>caches.delete(key)))),self.clients.claim()]))});

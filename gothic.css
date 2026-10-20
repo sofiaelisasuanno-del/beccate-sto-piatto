@@ -58,3 +58,73 @@ section::after{content:"🐦‍⬛";display:block;text-align:center;font-size:24
 .mealbody{background:#0d1c15;border-top:1px solid #b5a07933}
 .extra-quote{font-weight:700;color:#e9ddc2!important}
 @media(max-width:520px){.brand-logo{width:58px;height:58px}.brandwrap{gap:10px}}
+
+/* v1.2.3 — contrasto accessibile nella Panoramica della situa */
+#wellbeingHome .well-item{background:#0b2118!important;color:#f6f0e2!important;border:1px solid #b5a07990!important;box-shadow:inset 0 1px 0 #ffffff10!important}
+#wellbeingHome .well-item .well-date,#wellbeingHome .well-item .well-score{color:#fff6e6!important;opacity:1!important;text-shadow:none!important}
+#wellbeingHome .well-item .well-meta,#wellbeingHome .well-item small{color:#d5e2d5!important;opacity:1!important}
+#wellbeingHome .well-item .well-meter{background:#3f5949!important}
+#wellbeingHome .well-item .well-meter span{background:#63c88a!important}
+#wellbeingHome .well-dot{border:1.5px solid #d7e3d7!important}
+@media(max-width:520px){#wellbeingHome .well-item{grid-template-columns:53px 22px minmax(0,1fr);gap:9px;padding:12px 10px}#wellbeingHome .well-score{font-size:14px!important}#wellbeingHome .well-meta{font-size:12px!important;line-height:1.5!important;overflow-wrap:anywhere}}
+
+/* LAPAPPA v1.2.4 — dispensa della strega, ripiani in legno e ingredienti leggibili */
+#frigo .pantry-card{
+  background:radial-gradient(circle at 50% -20%,#1c3a2a,#08170f 75%)!important;
+  border:1px solid #ad956f!important;
+  padding:18px 16px 25px!important;
+  overflow:hidden;
+}
+#frigo .pantry-card>h3{font-size:21px;letter-spacing:.025em;margin-bottom:18px;color:#f5e6bf!important}
+#frigo #foodList{
+  display:grid!important;grid-template-columns:minmax(0,1fr);gap:0!important;
+  padding:0 8px!important;margin:0!important;
+  background:linear-gradient(90deg,#0a140e 0%,#10261a 7%,#10261a 93%,#0a140e 100%);
+  border-left:7px solid #37261b;border-right:7px solid #37261b;
+  box-shadow:inset 3px 0 7px #0008,inset -3px 0 7px #0008;
+}
+#frigo #foodList li{
+  position:relative;display:flex!important;flex-wrap:wrap;align-items:center;justify-content:flex-start;
+  gap:9px;padding:15px 14px 17px!important;margin:16px 7px 35px!important;
+  border:1px solid #a69576!important;border-radius:6px!important;
+  background:linear-gradient(150deg,#19412d,#10291d)!important;
+  box-shadow:0 4px 8px #0007,inset 0 1px 0 #ffffff14!important;
+  color:#f5efe3!important;
+  isolation:isolate;min-height:73px;overflow:visible;
+}
+#frigo #foodList li:nth-child(even){
+  background:linear-gradient(150deg,#f3eddc,#daceb7)!important;
+  color:#14291e!important;
+  border-color:#c9af7a!important;
+}
+#frigo #foodList li>span{min-width:0;overflow-wrap:anywhere;line-height:1.45}
+#frigo #foodList li b{font-size:clamp(16px,4vw,19px);color:inherit!important}
+#frigo #foodList li .pill{
+  background:#d9c6a1!important;color:#20311e!important;border:1px solid #ab9466!important;
+  font-weight:700!important;white-space:nowrap;vertical-align:middle;padding:4px 8px;margin:2px 0 2px 5px;
+}
+#frigo #foodList li:nth-child(even) .pill{background:#193f2b!important;color:#fff7e7!important;border-color:#315b40!important}
+#frigo #foodList li small{color:#e3d4b6!important;font-size:12px}
+#frigo #foodList li:nth-child(even) small{color:#374a3c!important}
+#frigo #foodList li button.action.danger{
+  margin:0 0 0 auto!important;min-height:37px;min-width:37px;
+  background:#2d2020!important;color:#fff0e6!important;border:1px solid #b49c7e!important;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+/* Tavola lignea sotto ogni ingrediente: più strati di venature realistiche senza immagini esterne. */
+#frigo #foodList li::after{
+  content:"";position:absolute;z-index:0;pointer-events:none;
+  left:-19px;right:-19px;bottom:-31px;height:19px;border-radius:3px 3px 5px 5px;
+  border:1px solid #9f7447;border-bottom:5px solid #392419;
+  background:
+    repeating-linear-gradient(1deg,transparent 0 2px,#28190e60 2px 3px,transparent 3px 6px),
+    repeating-linear-gradient(177deg,#d5ad765c 0 1px,transparent 1px 8px,#3320125a 8px 9px,transparent 9px 15px),
+    linear-gradient(180deg,#926840 0%,#6e462d 40%,#4d311d 75%,#332116 100%);
+  box-shadow:0 5px 7px #0009,inset 0 2px 0 #d2a77c99;
+}
+#frigo #foodList li:last-child{margin-bottom:40px!important}
+#frigo #foodList li:last-child::after{bottom:-31px}
+@media(min-width:700px){#frigo #foodList{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px}#frigo #foodList li{margin-inline:3px!important}#frigo #foodList li::after{left:-12px;right:-12px}}
+@media(max-width:410px){#frigo .pantry-card{padding-inline:9px!important}#frigo #foodList{padding-inline:3px!important}#frigo #foodList li{margin-inline:5px!important;padding-inline:10px!important}#frigo #foodList li::after{left:-12px;right:-12px}}
+
+#frigo #foodList li>span,#frigo #foodList li>button{position:relative;z-index:1}
