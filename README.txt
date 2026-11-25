@@ -3,8 +3,8 @@ LAPAPPA v2.0 ☽𖦹☾ — Beccate sto piatto
 COME AGGIORNARE IL REPOSITORY
 1. Prima di tutto apri l'app sul telefono → 📜 Grimorio → "Esporta il Grimorio completo" e conserva il file.
 2. Su GitHub apri il repository → Add file → Upload files.
-3. Trascina TUTTO il contenuto di questa cartella (file + cartelle "vendor" e "dati") e conferma "Commit changes".
-4. Apri https://sofiaelisasuanno-del.github.io/beccate-sto-piatto/?v=21#home e ricarica una volta.
+3. Seleziona TUTTI i 24 file (non ci sono sottocartelle) e premi il pulsante verde "Commit changes" in fondo alla pagina.
+4. Apri https://sofiaelisasuanno-del.github.io/beccate-sto-piatto/?v=22#home e ricarica una volta.
    Se vedi ancora la versione vecchia: chiudi l'app installata e riaprila (il service worker si aggiorna da solo).
 
 FILE NON PIÙ USATI (puoi cancellarli quando vuoi, non danno fastidio):
@@ -23,7 +23,7 @@ NOVITÀ
 - Panoramica (ex Salute): grafici calorie, macro, salute mentale e fisica (giorno/settimana/mese),
   PDF da condividere con la nutrizionista. Gli esami sono in fondo alla pagina.
 - Spesa: prezzi per voce (ricordati), totale, carrello e budget residuo.
-- dati/ricette_database.csv: tutto l'archivio ricette in formato tabellare (separatore ;), solo consultazione.
+- ricette_database.csv: tutto l'archivio ricette in formato tabellare (separatore ;), solo consultazione.
 
 NOTE
 Valori nutrizionali stimati dagli ingredienti (tabelle CREA/USDA): orientativi, non analisi di laboratorio.

@@ -1,24 +1,14 @@
 {
-  "name": "LAPAPPA",
+  "name": "LAPAPPA · Beccate sto piatto",
   "short_name": "LAPAPPA",
-  "description": "LAPAPPA gotica: logo corretto, ricette vegane stagionali, benessere e bonanza",
+  "description": "Frigo, ricette con valori nutrizionali, panoramica e spesa: la pappa della strega",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#102c21",
-  "theme_color": "#090e0b",
+  "background_color": "#FDFDFB",
+  "theme_color": "#1F5D3C",
   "icons": [
-    {
-      "src": "lapappa-logo-v122-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "lapappa-logo-v122-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    {"src": "lapappa-logo-v122-192.png","sizes": "192x192","type": "image/png","purpose": "any maskable"},
+    {"src": "lapappa-logo-v122-512.png","sizes": "512x512","type": "image/png","purpose": "any maskable"}
   ]
 }
