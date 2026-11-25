@@ -15,10 +15,9 @@ img{max-width:100%}
 .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 /* Intestazione */
-header{background:var(--forest);color:var(--paper);padding:calc(10px + env(safe-area-inset-top,0px)) 18px 20px;position:relative;overflow:hidden}
-header::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:34px;background:url('bramble.svg') center/600px 100% repeat-x;opacity:.55;pointer-events:none}
+header{background:var(--forest);color:var(--paper);padding:calc(14px + env(safe-area-inset-top,0px)) 18px 16px;position:relative;overflow:hidden}
 .moonrow{font-size:13px;letter-spacing:.35em;text-align:center;color:#D9E7DE;opacity:.9;white-space:nowrap;overflow:hidden}
-.brandwrap{display:flex;align-items:center;gap:14px;margin-top:10px;position:relative;z-index:1}
+.brandwrap{display:flex;align-items:center;gap:14px;margin-top:0;position:relative;z-index:1}
 .brand-logo{width:66px;height:66px;object-fit:contain;filter:drop-shadow(0 3px 6px #0006);background:var(--paper);border-radius:50%;padding:3px;border:2px solid var(--wine)}
 header h1{margin:0;font-family:var(--head);font-weight:400;font-size:clamp(30px,7vw,42px);line-height:1;letter-spacing:.04em}
 header p{margin:6px 0 0;color:#D9E7DE;font-size:14px;font-style:italic}
@@ -261,3 +260,71 @@ footer{padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));text-align
  .macro-row{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* ───── v2.3 ───── */
+.moon-mark{font-size:.62em;letter-spacing:.08em;margin-left:.25em;color:#E9C9D1;vertical-align:.12em;white-space:nowrap}
+/* tendina ingredienti */
+.combo{position:relative}
+.combo-list{position:absolute;z-index:20;left:0;right:0;top:calc(100% + 4px);margin:0;max-height:300px;overflow-y:auto;background:#fff;border:1.5px solid var(--forest);border-radius:12px;box-shadow:0 12px 28px rgba(23,74,47,.22);padding:4px}
+.combo-list li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;border:0;border-radius:9px;cursor:pointer}
+.combo-list li.on,.combo-list li:hover{background:var(--leaf)}
+.combo-main{display:flex;flex-direction:column;min-width:0}.combo-main small{font-size:12px}
+.combo-kcal{white-space:nowrap;font-size:12.5px;color:var(--muted)}
+.combo-tag{font-size:11.5px;font-weight:700;color:var(--forest);background:var(--leaf2);border-radius:999px;padding:1px 6px}
+.combo-empty{color:var(--muted);font-size:14px;cursor:default!important}
+#foodInfo .macro-chips{margin:8px 0 0}
+.jar-fe{position:absolute;top:6px;right:6px;font-size:10.5px;font-weight:800;color:var(--wine);background:var(--wine-soft);border-radius:999px;padding:0 5px}
+.jar.unlinked{border-style:dashed;border-color:var(--wine)}
+/* editor ingredienti */
+.ing-editor{margin:8px 0}
+.ing-row{display:grid;grid-template-columns:minmax(0,1fr) 72px 62px 32px;gap:6px;align-items:center;margin:6px 0}
+.ing-row input,.ing-row select{padding:8px;font-size:15px}
+.ing-row .jar-btn{height:36px;width:32px}
+.ing-editor .add-ing{margin-top:4px}
+dialog.sheet{max-height:88vh;overflow-y:auto}
+.mealfoot{gap:6px}
+/* storico: pasti più verdi e leggibili */
+#brecords .brecord{background:#E7F1EA;border:1px solid #B9D3C1;box-shadow:none}
+#brecords .brecord.pending{background:#F1F6F2;border:1.5px dashed #9CC0A6}
+#brecords .brecord .chip{background:#FDFDFB}
+#brecords .brecord .chip.kcal{background:var(--forest)}
+#brecords .photo-empty{background:#F4F8F5;border-color:#B9D3C1}
+/* emozioni */
+.emotions{display:grid;gap:10px}
+.emo-group small{display:block;font-weight:700;margin-bottom:4px}
+.emo-chips{display:flex;flex-wrap:wrap;gap:6px}
+.emo{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font:600 14px var(--body);color:var(--ink);cursor:pointer}
+.emo.pos[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:var(--paper)}
+.emo.neg[aria-pressed="true"]{background:var(--wine);border-color:var(--wine);color:var(--paper)}
+.emo.neu[aria-pressed="true"]{background:#5E6E64;border-color:#5E6E64;color:var(--paper)}
+/* ruota e sabba */
+.season-side{flex:1;min-width:200px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.sabbat{margin-top:18px;border-radius:16px;padding:16px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.sabbat-head{display:flex;gap:12px;align-items:center}
+.sabbat-icon{font-size:34px;line-height:1}
+.sabbat-head small{font-weight:700;opacity:.85;color:inherit}
+.sabbat h3{color:inherit!important;margin:0;font-size:26px}
+.sabbat-phrase{font-size:16px;line-height:1.55;margin:10px 0 4px}
+.sabbat-sec{margin-top:12px}.sabbat-sec>b{display:block;font-size:13.5px;margin-bottom:6px;opacity:.9}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.swatch{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:700;width:58px;text-align:center;line-height:1.15}
+.swatch i{width:34px;height:34px;border-radius:50%;border:2.5px solid rgba(255,255,255,.85);box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.sabbat:not(.dark) .swatch i{border-color:#fff}
+.sabbat-chips{display:flex;flex-wrap:wrap;gap:6px}
+.sabbat-chips span{border-radius:999px;padding:4px 10px;font-size:13px;font-weight:600;background:rgba(255,255,255,.72);color:#1B2A21}
+.sabbat.dark .sabbat-chips span{background:rgba(255,255,255,.14);color:#FDFDFB;border:1px solid rgba(255,255,255,.3)}
+.sabbat-next{margin:14px 0 0;font-size:13px;font-weight:600;opacity:.9;border-top:1px solid currentColor;padding-top:10px}
+@media(max-width:420px){.ing-row{grid-template-columns:minmax(0,1fr) 62px 56px 30px;gap:4px}.swatch{width:52px}}
+.season-layout{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;text-align:center}
+.season-wheel{width:170px;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-inline:auto}
+.season-core{width:108px;height:108px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:50%;text-align:center}
+.season-core small{font-size:12.5px}
+.season-foods{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.season-chip{border-radius:999px;padding:4px 10px;font-size:13px}
+.season-months{display:flex;gap:10px;align-items:center;justify-content:center;margin:14px 0}
+.season-months button{padding:7px 13px;border-radius:10px;font-weight:700;cursor:pointer}
+.season-months strong{min-width:110px;text-align:center;font-family:var(--head);font-weight:400;font-size:20px;color:var(--forest)}
+.ing-row{position:relative}.ing-row .combo{position:static}
+.ing-row .combo-list{left:0;right:0}
+.combo-list li{flex-wrap:wrap;row-gap:2px}
+[hidden]{display:none!important}

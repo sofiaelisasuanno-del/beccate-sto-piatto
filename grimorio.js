@@ -1,74 +1,80 @@
-/* LAPAPPA v1.3 – Backup completo creato su richiesta, senza inviare dati in rete. */
-(()=>{
-'use strict';
+/* LAPAPPA v2.3 · Il Grimorio: backup in un tocco, copie automatiche sul telefono, ripristino guidato.
+   Compatibile con i backup v1 già scaricati. Nessun dato viene inviato a server: la condivisione la scegli tu. */
+(()=>{'use strict';
 const root=document.getElementById('grimorioApp');if(!root)return;
-const localKeys=['bsp-v1','bsp-planner-v2','bsp-bonanza-v1','bsp-cycle-v1','bsp-sleep-v1'];
-const LAST='lapappa-grimorio-last-export-v1',PERIOD=14*24*60*60*1000;
+const LAST='lapappa-grimorio-last-export-v1',PERIOD=14*864e5,KEEP=7;
 const el=id=>document.getElementById(id);
+const fmt=t=>new Date(t).toLocaleString('it-IT',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 root.innerHTML=`
-<p>Qui custodisci la tua dispensa, i calendari, il diario, i dati sul ciclo, il sonno e le fotografie della bonanza. Il file rimane sotto il tuo controllo: non viene inviato a servizi esterni.</p>
 <div class="grim-status" id="grimStatus" role="status"></div>
-<div class="grim-actions"><button class="action" type="button" id="grimExport">⬇ Esporta il Grimorio completo</button>
-<label for="grimImport">📥 Seleziona un backup da ripristinare</label><input id="grimImport" type="file" accept=".json,application/json"></div>
-<div id="grimReview" class="grim-review" hidden><h3>Verifica prima del ripristino</h3><p id="grimReviewText"></p>
-<label for="grimMode">Come vuoi ripristinare?</label><select id="grimMode"><option value="merge">Unisci al contenuto esistente (consigliato)</option><option value="replace">Sostituisci il contenuto esistente (attenzione)</option></select>
-<p class="muted">La modalità Unisci conserva le voci locali non presenti nel backup quando possibile. Per i record in conflitto, prevale il backup. Per maggiore sicurezza, esporta prima lo stato attuale.</p>
-<button class="action" id="grimConfirm" type="button">Conferma ripristino</button><button class="action secondary" id="grimCancel" type="button">Annulla</button></div>
-<details open><summary><b>📖 Come ripristinare LAPAPPA, passo dopo passo</b></summary><ol class="grim-instructions">
-<li>Apri <b>Il Grimorio</b> sullo stesso browser in cui vuoi riavere i dati.</li>
-<li>Premi <b>Seleziona un backup</b> e scegli il file <code>LAPAPPA-grimorio-...json</code> dalla cartella <b>Backup_lapappa</b> (o da Download).</li>
-<li>Leggi il riepilogo e controlla la data del backup e quanti ingredienti e foto contiene.</li>
-<li>Se hai dati nuovi, scegli <b>Unisci</b>. Usa <b>Sostituisci</b> soltanto se intendi rimpiazzare il contenuto attuale.</li>
-<li>Premi <b>Conferma ripristino</b>, attendi il messaggio finale e riapri LAPAPPA.</li>
-</ol></details>
-<details><summary><b>📂 Dove conservare i backup sul telefono</b></summary><p>Apri l'app <b>File</b>, crea una cartella <b>Backup_lapappa</b> nella memoria interna, quindi sposta lì il file scaricato da <b>Download</b>. Meglio mantenere anche una copia privata esterna al telefono. Non caricare il backup su GitHub: può contenere informazioni sanitarie e foto.</p><p>Il browser non può promettere un download automatico silenzioso ogni 14 giorni, né scrivere liberamente in una cartella di Android. Quando apri l'app dopo 14 giorni ti ricordiamo di esportare il Grimorio.</p></details>
-<p class="muted">Attenzione: non cancellare i dati di Brave/Chrome prima di avere un backup scaricato e verificato. Se perdi anche l'ultimo backup, il recupero potrebbe essere impossibile.</p>`;
-const extraStyle=document.createElement('style');extraStyle.textContent=`#grimorioApp .grim-status{background:#0c2118;border:1px solid #baa37d;border-radius:6px;padding:12px;margin:14px 0;line-height:1.55;color:#f1e4cb}#grimorioApp .grim-actions{display:grid;gap:9px}#grimorioApp .grim-actions>label{margin:0;font-weight:700}#grimorioApp input[type=file]{min-height:54px}#grimorioApp details{margin-top:18px;background:#0d271b;border:1px solid #a99166;border-radius:7px;padding:13px}#grimorioApp summary{cursor:pointer}#grimorioApp .grim-instructions{padding-left:23px;list-style:decimal}#grimorioApp .grim-instructions li{display:list-item;border:0;padding:8px 0}#grimorioApp code{overflow-wrap:anywhere}#grimorioApp .grim-review{padding:12px;margin-top:15px;background:#173a29;border:1px solid #b5a079;border-radius:8px}`;document.head.appendChild(extraStyle);
-let candidate=null;
-function state(){const t=Number(localStorage.getItem(LAST));return t>0?`Ultimo backup scaricato: ${new Date(t).toLocaleString('it-IT')}. Prossimo controllo dopo 14 giorni.`:'Nessun backup completo esportato da questo browser.'}
-function showStatus(t){el('grimStatus').textContent=t}
-showStatus(state());
-function findKeys(){let keys=new Set(localKeys);for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('bsp-'))keys.add(k)}return [...keys].filter(k=>localStorage.getItem(k)!==null)}
-function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open('bsp-bonanza-photos',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('photos'))r.result.createObjectStore('photos')};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error||Error('Archivio foto non disponibile'))})}
-async function collectPhotos(){const db=await openDB();const rows=await new Promise((resolve,reject)=>{const tx=db.transaction('photos','readonly');const store=tx.objectStore('photos');let keys=[],values=[];store.getAllKeys().onsuccess=e=>{keys=e.target.result};store.getAll().onsuccess=e=>{values=e.target.result};tx.oncomplete=()=>{db.close();resolve(keys.map((id,i)=>({id,blob:values[i]})))};tx.onerror=()=>{db.close();reject(tx.error)}});const out=[];for(const row of rows){if(!(row.blob instanceof Blob))throw Error('Foto non leggibile');out.push({id:String(row.id),mime:row.blob.type||'image/jpeg',bytes:await toBase64(row.blob)})}return out}
-function toBase64(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=()=>reject(reader.error);reader.readAsDataURL(blob)})}
-function fromBase64(encoded,type){const binary=atob(encoded),arr=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)arr[i]=binary.charCodeAt(i);return new Blob([arr],{type:type||'image/jpeg'})}
-async function hash(str){const encoded=new TextEncoder().encode(str);const digest=await crypto.subtle.digest('SHA-256',encoded);return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function summarize(store,photos){const obj=k=>{try{return JSON.parse(store[k]||'null')}catch{return null}};const a=obj('bsp-v1')||{},b=obj('bsp-bonanza-v1')||[];return {ingredients:Array.isArray(a.foods)?a.foods.length:0,shop:Array.isArray(a.shop)?a.shop.length:0,health:Array.isArray(a.labs)?a.labs.length:0,diary:Array.isArray(a.logs)?a.logs.length:0,meals:Array.isArray(b)?b.length:0,photos:photos.length}}
-function triggerDownload(data,name){const url=URL.createObjectURL(new Blob([data],{type:'application/json;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000)}
-async function exportBackup(){const btn=el('grimExport');btn.disabled=true;showStatus('Preparazione del backup, fotografie comprese…');try{
-const local={};for(const k of findKeys())local[k]=localStorage.getItem(k);
-const photos=await collectPhotos();const payload={schema:'lapappa-grimorio',version:1,exportedAt:new Date().toISOString(),origin:location.origin,local,photos};
-const body=JSON.stringify(payload);const backup={...payload,sha256:await hash(body)};
-const stamp=payload.exportedAt.replaceAll(':','-').slice(0,19);triggerDownload(JSON.stringify(backup),`LAPAPPA-grimorio-${stamp}.json`);
-localStorage.setItem(LAST,String(Date.now()));const n=summarize(local,photos);showStatus(`Download richiesto. Controlla Download: ${n.ingredients} ingredienti, ${n.meals} pasti registrati, ${n.photos} foto. Sposta il file in Backup_lapappa e verifica che sia presente. Ricontrollo tra 14 giorni.`);
-}catch(e){showStatus('Backup non riuscito: '+e.message+'. Non cancellare alcun dato.')}finally{btn.disabled=false}}
-el('grimExport').addEventListener('click',exportBackup);
-function countDescribe(x){const s=summarize(x.local,x.photos);return `${s.ingredients} ingredienti, ${s.shop} voci di spesa, ${s.health} valori salute, ${s.diary} registrazioni diario, ${s.meals} pasti e ${s.photos} foto.`}
-el('grimImport').addEventListener('change',async ev=>{candidate=null;el('grimReview').hidden=true;const file=ev.target.files?.[0];if(!file)return;try{
-if(file.size>120*1024*1024)throw Error('File troppo grande (>120 MB)');const raw=await file.text();const x=JSON.parse(raw);
-if(x.schema!=='lapappa-grimorio'||x.version!==1||!x.local||typeof x.local!=='object'||!Array.isArray(x.photos)||!x.sha256)throw Error('Formato Grimorio non valido');
-if(Object.keys(x.local).some(k=>!k.startsWith('bsp-')||typeof x.local[k]!=='string'))throw Error('Dati locali non validi');
-for(const v of Object.values(x.local))JSON.parse(v);
-for(const p of x.photos){if(typeof p.id!=='string'||!p.id||typeof p.bytes!=='string'||!/^[-\w+/=]*$/.test(p.bytes)||p.bytes.length>15_000_000)throw Error('Fotografia non valida')}
-const {sha256,...rest}=x;if(await hash(JSON.stringify(rest))!==sha256)throw Error('Controllo integrità fallito: file alterato o incompleto');
-candidate=x;el('grimReviewText').textContent=`Backup del ${new Date(x.exportedAt).toLocaleString('it-IT')}. Contiene ${countDescribe(x)} ATTENZIONE: scegli come integrare questi dati.`;el('grimReview').hidden=false;showStatus('Backup verificato. Scegli come ripristinare e conferma.');
-}catch(e){showStatus('Impossibile importare: '+e.message)}});
-function combine(a,b){const output={...a};for(const [k,v] of Object.entries(b)){if(k==='bsp-v1'){const left=JSON.parse(a[k]||'{}'),right=JSON.parse(v);const next={...left,...right};for(const field of ['foods','recipes','labs','logs','shop']){const l=Array.isArray(left[field])?left[field]:[],r=Array.isArray(right[field])?right[field]:[];const seen=new Set();next[field]=[...l,...r].filter(z=>{const key=JSON.stringify(z);if(seen.has(key))return false;seen.add(key);return true})}output[k]=JSON.stringify(next)}else if(k==='bsp-bonanza-v1'){const l=JSON.parse(a[k]||'[]'),r=JSON.parse(v);const items=new Map(l.map(z=>[z.id,z]));for(const z of r)items.set(z.id,z);output[k]=JSON.stringify([...items.values()])}else if(k==='bsp-planner-v2'||k==='bsp-sleep-v1'){output[k]=JSON.stringify({...JSON.parse(a[k]||'{}'),...JSON.parse(v)})}else if(k==='bsp-cycle-v1'){const l=JSON.parse(a[k]||'[]'),r=JSON.parse(v);if(Array.isArray(l)&&Array.isArray(r))output[k]=JSON.stringify([...new Map([...l,...r].map(z=>[JSON.stringify(z),z])).values()]);else output[k]=v}else output[k]=v}return output}
-function restorePhotos(photos){return openDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction('photos','readwrite'),s=tx.objectStore('photos');try{for(const p of photos)s.put(fromBase64(p.bytes,p.mime),p.id)}catch(e){db.close();reject(e);return}tx.oncomplete=()=>{db.close();resolve()};tx.onerror=()=>{db.close();reject(tx.error)}}))}
-el('grimCancel').onclick=()=>{candidate=null;el('grimReview').hidden=true;el('grimImport').value='';showStatus(state())};
-el('grimConfirm').onclick=async()=>{if(!candidate)return;const mode=el('grimMode').value;const ok=confirm(mode==='replace'?'Vuoi SOSTITUIRE i dati attuali con il backup? Le voci attuali non presenti potrebbero andare perdute.':'Vuoi UNIRE il backup ai dati locali attuali? Le voci compatibili verranno mantenute.');if(!ok)return;
-const btn=el('grimConfirm');btn.disabled=true;showStatus('Ripristino in corso. Non chiudere questa pagina…');try{
-const existing={};for(const k of findKeys())existing[k]=localStorage.getItem(k);
-const merged=mode==='merge'?combine(existing,candidate.local):candidate.local;
-// Photographs are imported first; state data are only committed when this step succeeds.
-await restorePhotos(candidate.photos);
-// Avoid clearing keys belonging to other features. Backups only replace app-owned keys.
-if(mode==='replace')for(const k of findKeys())if(!(k in merged))localStorage.removeItem(k);
-for(const [k,v] of Object.entries(merged))localStorage.setItem(k,v);
-showStatus('Ripristino completato. Ricarica LAPAPPA per visualizzare i dati.');el('grimReview').hidden=true;candidate=null;
-}catch(e){showStatus('Ripristino non riuscito: '+e.message+'. Non cancellare i dati.')}finally{btn.disabled=false}};
-function isDue(){const n=Number(localStorage.getItem(LAST));return !n||Date.now()-n>=PERIOD}
-function displayReminder(){if(!isDue())return;const banner=document.createElement('div');banner.className='card';banner.id='grimReminder';banner.style.cssText='border:2px solid #b5a079;background:#142c20;margin:10px 0;color:#f4ead8';banner.innerHTML='<strong>📜 È tempo di proteggere il tuo Grimorio!</strong><p>Non risulta un backup completo negli ultimi 14 giorni. Salva ora una copia dei tuoi dati e delle foto in Backup_lapappa.</p><button class="action" type="button" id="grimGo">Apri il Grimorio</button><button class="action secondary" type="button" id="grimLater">Più tardi</button>';const home=document.getElementById('home');if(home){home.prepend(banner);banner.querySelector('#grimGo').onclick=()=>go('grimorio');banner.querySelector('#grimLater').onclick=()=>banner.remove()}}
-displayReminder();
+<section class="grim-step"><h3>📤 1 · Salva il backup fuori dal telefono</h3>
+ <p>Un tocco crea il file con tutti i dati e le foto e apre la condivisione del telefono: scegli <b>Drive</b>, <b>Telegram</b> (Messaggi salvati), <b>WhatsApp</b> a te stessa o la mail. Se il telefono non può condividere, il file finisce in Download.</p>
+ <label class="check"><input type="checkbox" id="grimLock"> 🔒 Proteggi con una password (consigliato se lo mandi in chat o per mail)</label>
+ <div id="grimPwdBox" hidden><label for="grimPwd">Password</label><input id="grimPwd" type="password" autocomplete="new-password" placeholder="Almeno 6 caratteri: non la potrò recuperare io"></div>
+ <button class="action big" type="button" id="grimExport">📤 Salva backup ora</button><button class="action big secondary" type="button" id="grimReady" hidden>✨ File pronto: tocca per condividerlo</button></section>
+<section class="grim-step"><h3>🕯️ 2 · Copie automatiche su questo telefono</h3>
+ <p>Ogni giorno, aprendo l’app, il Grimorio salva da solo una copia dei dati (senza foto) e tiene le ultime ${KEEP}. Servono se cancelli qualcosa per sbaglio: un tocco su <b>Ripristina</b> e torni indietro.</p>
+ <p class="muted fine">Attenzione: le copie vivono nel browser. Se cancelli i dati di Chrome o perdi il telefono spariscono anche loro, per questo esiste il passo 1.</p>
+ <div id="grimSnaps"></div><button class="action secondary mini" type="button" id="grimSnapNow">Crea una copia adesso</button></section>
+<section class="grim-step"><h3>📥 3 · Ripristina da un file</h3>
+ <p>Hai cambiato telefono o browser? Apri LAPAPPA, tocca il pulsante e scegli il file <code>LAPAPPA-grimorio-…json</code> da Drive, Telegram o Download.</p>
+ <label class="action secondary" for="grimImport">📥 Scegli il file di backup</label><input class="sr-only" id="grimImport" type="file" accept=".json,application/json">
+ <div id="grimReview" class="grim-review" hidden><p id="grimReviewText"></p>
+  <div id="grimPwdAskBox" hidden><label for="grimPwdAsk">Password del backup</label><input id="grimPwdAsk" type="password" autocomplete="current-password"><button class="action mini" type="button" id="grimUnlock">Sblocca</button></div>
+  <div id="grimModeBox"><label class="check"><input type="radio" name="grimMode" value="merge" checked> Unisci ai dati attuali (consigliato)</label><label class="check"><input type="radio" name="grimMode" value="replace"> Sostituisci tutto con il backup</label>
+  <button class="action" id="grimConfirm" type="button">Ripristina</button><button class="action secondary" id="grimCancel" type="button">Annulla</button></div></div></section>
+<p class="muted fine">Non caricare i backup su GitHub: contengono dati di salute e foto.</p>`;
+const st=document.createElement('style');st.textContent='.grim-step{border-top:1px dashed var(--line);padding-top:12px;margin-top:14px}.grim-step:first-of-type{border-top:0}.grim-step h3{font-size:19px}.action.big{width:100%;padding:15px;font-size:17px}.snap{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.snap:last-child{border:0}.grim-review{background:var(--wine-soft);border-radius:12px;padding:12px;margin-top:12px}';document.head.appendChild(st);
+const keys=()=>{const k=[];for(let i=0;i<localStorage.length;i++){const x=localStorage.key(i);if(x&&x.startsWith('bsp-'))k.push(x)}return k};
+const localDump=()=>{const o={};for(const k of keys())o[k]=localStorage.getItem(k);return o};
+function idb(name,store,opts){return new Promise((res,rej)=>{const r=indexedDB.open(name,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(store))r.result.createObjectStore(store,opts)};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+const photosDB=()=>idb('bsp-bonanza-photos','photos'),snapsDB=()=>idb('bsp-snapshots','snaps',{keyPath:'at'});
+function b64(blob){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=()=>rej(r.error);r.readAsDataURL(blob)})}
+function unb64(s,type){const bin=atob(s),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:type||'image/jpeg'})}
+async function collectPhotos(){const db=await photosDB();const rows=await new Promise((res,rej)=>{const tx=db.transaction('photos','readonly'),s=tx.objectStore('photos');let k=[],v=[];s.getAllKeys().onsuccess=e=>k=e.target.result;s.getAll().onsuccess=e=>v=e.target.result;tx.oncomplete=()=>{db.close();res(k.map((id,i)=>({id,blob:v[i]})))};tx.onerror=()=>{db.close();rej(tx.error)}});const out=[];for(const r of rows)if(r.blob instanceof Blob)out.push({id:String(r.id),mime:r.blob.type||'image/jpeg',bytes:await b64(r.blob)});return out}
+async function restorePhotos(ps){if(!ps.length)return;const db=await photosDB();await new Promise((res,rej)=>{const tx=db.transaction('photos','readwrite'),s=tx.objectStore('photos');for(const p of ps)s.put(unb64(p.bytes,p.mime),p.id);tx.oncomplete=()=>{db.close();res()};tx.onerror=()=>{db.close();rej(tx.error)}})}
+async function sha(str){const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function keyFrom(pwd,salt){const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pwd),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:200000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+const toB=u=>btoa(String.fromCharCode(...u)),fromB=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function encrypt(text,pwd){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const k=await keyFrom(pwd,salt);const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(text)));let s='';for(let i=0;i<ct.length;i+=32768)s+=String.fromCharCode(...ct.subarray(i,i+32768));return JSON.stringify({schema:'lapappa-grimorio-cifrato',version:1,salt:toB(salt),iv:toB(iv),data:btoa(s)})}
+async function decrypt(obj,pwd){const k=await keyFrom(pwd,fromB(obj.salt));const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:fromB(obj.iv)},k,fromB(obj.data));return new TextDecoder().decode(pt)}
+function counts(local,photos){const j=k=>{try{return JSON.parse(local[k]||'null')}catch{return null}};const a=j('bsp-v1')||{},b=j('bsp-bonanza-v1')||[];return `${(a.foods||[]).length} ingredienti, ${Array.isArray(b)?b.length:0} pasti, ${(a.logs||[]).length} voci di diario${photos!==undefined?`, ${photos} foto`:''}`}
+async function status(){const last=Number(localStorage.getItem(LAST));let persisted=false;try{persisted=await navigator.storage?.persisted?.()}catch{}
+ el('grimStatus').innerHTML=`${last?`✅ Ultimo backup salvato: <b>${fmt(last)}</b>`:'⚠️ Nessun backup salvato fuori dal telefono: fai il passo 1.'}<br>${persisted?'🛡️ Il browser non cancellerà i dati da solo.':'🛡️ Protezione dalla pulizia automatica del browser: richiesta.'}`}
+/* ── 1. backup in un tocco ── */
+el('grimLock').onchange=e=>{el('grimPwdBox').hidden=!e.target.checked};
+async function exportBackup(){const btn=el('grimExport');const lock=el('grimLock').checked,pwd=el('grimPwd').value;if(lock&&pwd.length<6)return alert('Scegli una password di almeno 6 caratteri (e segnatela!).');btn.disabled=true;btn.textContent='Preparo il Grimorio…';
+ try{const local=localDump(),photos=await collectPhotos();const payload={schema:'lapappa-grimorio',version:1,exportedAt:new Date().toISOString(),origin:location.origin,local,photos};const body=JSON.stringify(payload);let text=JSON.stringify({...payload,sha256:await sha(body)});if(lock)text=await encrypt(text,pwd);
+  const stamp=payload.exportedAt.slice(0,16).replace('T','_').replace(':','-');const name=`LAPAPPA-grimorio-${stamp}${lock?'-protetto':''}.json`;const file=new File([text],name,{type:'application/json'});let done='scaricato in Download';
+  if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'Backup LAPAPPA',text:'Il mio Grimorio di LAPAPPA'});done='condiviso'}catch(e){if(e.name==='AbortError'){btn.textContent='📤 Salva backup ora';btn.disabled=false;return}
+   /* il telefono chiede un nuovo tocco quando il file è grande: offro un secondo pulsante già pronto */
+   pending=file;const r=el('grimReady');r.hidden=false;btn.disabled=false;btn.textContent='📤 Salva backup ora';return}}else download(file);
+  localStorage.setItem(LAST,String(Date.now()));document.getElementById('grimReminder')?.remove();status();alert(`📜 Backup ${done}: ${counts(local,photos.length)}.${lock?' Ricorda la password: senza non si apre.':''}`)}
+ catch(e){alert('Backup non riuscito: '+e.message+'. I dati restano dove sono.')}finally{btn.disabled=false;btn.textContent='📤 Salva backup ora'}}
+function download(file){const url=URL.createObjectURL(file),a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000)}
+let pending=null;
+el('grimExport').onclick=exportBackup;
+el('grimReady').onclick=async()=>{if(!pending)return;try{await navigator.share({files:[pending],title:'Backup LAPAPPA'});localStorage.setItem(LAST,String(Date.now()));status();alert('📜 Backup condiviso.')}catch(e){if(e.name!=='AbortError'){download(pending);localStorage.setItem(LAST,String(Date.now()));status();alert('Condivisione non disponibile: file scaricato in Download.')}}el('grimReady').hidden=true;pending=null};
+/* ── 2. copie automatiche ── */
+async function snaps(){const db=await snapsDB();return new Promise((res,rej)=>{const tx=db.transaction('snaps','readonly'),r=tx.objectStore('snaps').getAll();r.onsuccess=()=>{db.close();res((r.result||[]).sort((a,b)=>b.at-a.at))};r.onerror=()=>{db.close();rej(r.error)}})}
+async function snapshot(){const db=await snapsDB();const all=await snaps();await new Promise((res,rej)=>{const tx=db.transaction('snaps','readwrite'),s=tx.objectStore('snaps');s.put({at:Date.now(),local:localDump()});all.slice(KEEP-1).forEach(x=>s.delete(x.at));tx.oncomplete=()=>{db.close();res()};tx.onerror=()=>{db.close();rej(tx.error)}});renderSnaps()}
+async function renderSnaps(){try{const all=await snaps();el('grimSnaps').innerHTML=all.length?all.map(x=>`<div class="snap"><span><b>${fmt(x.at)}</b><br><small>${counts(x.local)}</small></span><button class="action secondary mini" type="button" data-snap="${x.at}">Ripristina</button></div>`).join(''):'<p class="muted">Nessuna copia ancora: la prima arriva da sola.</p>';
+ el('grimSnaps').querySelectorAll('[data-snap]').forEach(b=>b.onclick=async()=>{const x=(await snaps()).find(s=>String(s.at)===b.dataset.snap);if(!x)return;if(!confirm(`Tornare ai dati del ${fmt(x.at)}? Prima salvo una copia di come sono adesso, così puoi sempre tornare indietro.`))return;await snapshot();for(const k of keys())if(!(k in x.local))localStorage.removeItem(k);for(const [k,v] of Object.entries(x.local))localStorage.setItem(k,v);alert('Fatto! Ricarico l’app 🔮');location.reload()})}catch(e){el('grimSnaps').textContent='Copie automatiche non disponibili in questo browser.'}}
+el('grimSnapNow').onclick=()=>snapshot().then(()=>alert('Copia creata 🕯️'));
+(async()=>{try{await navigator.storage?.persist?.()}catch{}status();try{const all=await snaps();if(!all.length||Date.now()-all[0].at>20*3600e3)await snapshot();else renderSnaps()}catch{renderSnaps()}})();
+/* ── 3. ripristino ── */
+let raw=null,cand=null;
+function combine(a,b){const out={...a};for(const [k,v] of Object.entries(b)){try{if(k==='bsp-v1'){const l=JSON.parse(a[k]||'{}'),r=JSON.parse(v),n={...l,...r};for(const f of['foods','recipes','labs','logs','shop']){const seen=new Set();n[f]=[...(l[f]||[]),...(r[f]||[])].filter(z=>{const s=JSON.stringify(z);if(seen.has(s))return false;seen.add(s);return true})}n.prices={...(l.prices||{}),...(r.prices||{})};out[k]=JSON.stringify(n)}
+ else if(k==='bsp-bonanza-v1'){const m=new Map(JSON.parse(a[k]||'[]').map(z=>[z.id,z]));for(const z of JSON.parse(v))m.set(z.id,z);out[k]=JSON.stringify([...m.values()])}
+ else if(k==='bsp-cycle-v1'){out[k]=JSON.stringify([...new Map([...JSON.parse(a[k]||'[]'),...JSON.parse(v)].map(z=>[JSON.stringify(z),z])).values()])}
+ else if(/planner|sleep|daily/.test(k)){out[k]=JSON.stringify({...JSON.parse(a[k]||'{}'),...JSON.parse(v)})}else out[k]=v}catch{out[k]=v}}return out}
+async function validate(text){const x=JSON.parse(text);if(x.schema!=='lapappa-grimorio'||!x.local||!Array.isArray(x.photos))throw Error('non è un backup di LAPAPPA');if(Object.keys(x.local).some(k=>!k.startsWith('bsp-')))throw Error('dati non validi');if(x.sha256){const {sha256,...rest}=x;if(await sha(JSON.stringify(rest))!==sha256)throw Error('file incompleto o modificato')}return x}
+function ready(x){cand=x;el('grimPwdAskBox').hidden=true;el('grimModeBox').hidden=false;el('grimReviewText').innerHTML=`✅ Backup del <b>${fmt(x.exportedAt)}</b> verificato: ${counts(x.local,x.photos.length)}.`}
+el('grimImport').onchange=async ev=>{cand=null;const f=ev.target.files?.[0];if(!f)return;el('grimReview').hidden=false;try{raw=await f.text();const o=JSON.parse(raw);if(o.schema==='lapappa-grimorio-cifrato'){el('grimReviewText').textContent='🔒 Questo backup è protetto: inserisci la password.';el('grimPwdAskBox').hidden=false;el('grimModeBox').hidden=true}else ready(await validate(raw))}catch(e){el('grimReviewText').textContent='Impossibile usare il file: '+e.message;el('grimModeBox').hidden=true}};
+el('grimUnlock').onclick=async()=>{try{ready(await validate(await decrypt(JSON.parse(raw),el('grimPwdAsk').value)))}catch(e){el('grimReviewText').textContent='Password errata o file danneggiato.'}};
+el('grimCancel').onclick=()=>{cand=null;el('grimReview').hidden=true;el('grimImport').value=''};
+el('grimConfirm').onclick=async()=>{if(!cand)return;const mode=document.querySelector('[name=grimMode]:checked').value;if(!confirm(mode==='replace'?'Sostituire i dati attuali con il backup? Prima salvo una copia automatica di sicurezza.':'Unire il backup ai dati attuali? Prima salvo una copia automatica di sicurezza.'))return;
+ try{await snapshot();const cur=localDump();const merged=mode==='merge'?combine(cur,cand.local):cand.local;await restorePhotos(cand.photos);if(mode==='replace')for(const k of keys())if(!(k in merged))localStorage.removeItem(k);for(const [k,v] of Object.entries(merged))localStorage.setItem(k,v);alert('Ripristino completato! Ricarico l’app 🔮');location.reload()}catch(e){alert('Ripristino non riuscito: '+e.message+'. I dati attuali sono al sicuro nella copia automatica.')}};
+/* ── promemoria ogni 14 giorni ── */
+const last=Number(localStorage.getItem(LAST));if(!last||Date.now()-last>=PERIOD){const b=document.createElement('div');b.className='card';b.id='grimReminder';b.innerHTML='<strong>📜 È ora di salvare il Grimorio</strong><p>Non risulta un backup fuori dal telefono negli ultimi 14 giorni. Bastano due tocchi.</p><button class="action" type="button" id="grimGo">📤 Salva backup ora</button><button class="action secondary" type="button" id="grimLater">Più tardi</button>';document.getElementById('home')?.prepend(b);b.querySelector('#grimGo').onclick=exportBackup;b.querySelector('#grimLater').onclick=()=>b.remove()}
 })();

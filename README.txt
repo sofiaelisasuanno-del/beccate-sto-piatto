@@ -1,30 +1,32 @@
-LAPAPPA v2.0 ☽𖦹☾ — Beccate sto piatto
+LAPAPPA v2.3 ☽𖦹☾ — Beccate sto piatto
 
-COME AGGIORNARE IL REPOSITORY
-1. Prima di tutto apri l'app sul telefono → 📜 Grimorio → "Esporta il Grimorio completo" e conserva il file.
-2. Su GitHub apri il repository → Add file → Upload files.
-3. Seleziona TUTTI i 24 file (non ci sono sottocartelle) e premi il pulsante verde "Commit changes" in fondo alla pagina.
-4. Apri https://sofiaelisasuanno-del.github.io/beccate-sto-piatto/?v=22#home e ricarica una volta.
-   Se vedi ancora la versione vecchia: chiudi l'app installata e riaprila (il service worker si aggiorna da solo).
+COME AGGIORNARE (i tuoi dati restano: vivono nel telefono, non su GitHub)
+1. Apri https://github.com/sofiaelisasuanno-del/beccate-sto-piatto/upload/main
+2. Seleziona TUTTI i file di questa cartella (non ci sono sottocartelle) e premi "Commit changes" in fondo alla pagina.
+3. Quando in Actions il caricamento è verde, apri https://sofiaelisasuanno-del.github.io/beccate-sto-piatto/?v=23#home
 
-FILE NON PIÙ USATI (puoi cancellarli quando vuoi, non danno fastidio):
-recipes800.js · recipes_market.js · gothic.css · lapappa-logo.png ·
-lapappa-logo-192.png · lapappa-logo-512.png · cartella Beccate_sto_piatto_PWA_v01
+NOVITÀ v2.3
+- Oggi: il riquadro della Ruota dell'Anno sta sotto frutta e ortaggi e cambia colore con sabba, esbat (luna piena) o luna nuova:
+  colori in cerchi, temi da onorare, pietre per l'altare, cibi in tavola e date delle prossime lune.
+- Header: solo LAPAPPA ☽𖦹☾, niente rovi e niente sottotitolo.
+- Frigo: si aggiunge solo scegliendo dal database di 267 alimenti vegetali (tendina con ricerca e sinonimi).
+  Gli ingredienti già inseriti vengono collegati da soli; quelli non riconosciuti mostrano "⚠ da collegare".
+- Ricette: 1689 varianti riviste (proteine, fibre, legumi, integrali, verdure in ogni pasto principale), collegate al database ingredienti.
+- Pappa buona: pulsante "✎ Ingredienti" su ogni pasto per sostituire, togliere o aggiungere ingredienti; i valori si ricalcolano.
+  Anche i pasti fuori programma si possono comporre con gli ingredienti.
+- Storico della bonanza: pasti su sfondo verde chiaro, più leggibili.
+- Oggi mi sento: ora esatta ed emozioni (8 primarie + 21 sfumature) che entrano nell'indice mentale.
+  Ogni registrazione resta separata; nei grafici vedi la giornata ora per ora e gli sbalzi (min–max).
+- Grimorio: backup in un tocco con condivisione (Drive, Telegram, mail), password facoltativa,
+  copie automatiche giornaliere sul telefono (ultime 7) e ripristino guidato.
 
-NOVITÀ
-- Palette 60/30/10: carta rgb(253,253,251), bosco rgb(31,93,60), vino rgb(128,0,32).
-- Frigo: armadio in legno con 3 ingredienti per ripiano, ingredienti modificabili (✎).
-- Pappa buona: 1945 varianti (72 preparazioni storiche + 76 nuove), valori nutrizionali per ricetta,
-  colonne calorie, carboidrati, proteine, grassi, fibre e "ricco di ferro" (≥ 8 mg a porzione), casella "Mangiato", vitamine D e B12 per giorno,
-  porzioni ridimensionate sull'obiettivo calorico.
-- Ciclo: invariato; nei giorni di ciclo almeno un piatto ricco di ferro garantito.
-- Dieta: regolatore delle calorie + stima Mifflin-St Jeor, 3 pasti al giorno.
-- Storico della bonanza: piatti mangiati, foto da fotocamera con salvataggio automatico, calcolatore del giorno.
-- Panoramica (ex Salute): grafici calorie, macro, salute mentale e fisica (giorno/settimana/mese),
-  PDF da condividere con la nutrizionista. Gli esami sono in fondo alla pagina.
-- Spesa: prezzi per voce (ricordati), totale, carrello e budget residuo.
-- ricette_database.csv: tutto l'archivio ricette in formato tabellare (separatore ;), solo consultazione.
+FILE DI DATI (solo consultazione, l'app non li carica)
+- ingredienti_database.csv: nome, categoria, kcal, proteine, carboidrati, grassi, fibre, ferro, calcio, ricco di ferro, unità, peso pezzo, sinonimi.
+- ricette_database.csv: colonne nutrizionali + per ogni ingrediente (fino a 8) nome, grammi e kcal.
+- ricette_ingredienti.csv: una riga per ogni ingrediente di ogni ricetta, con tutti i nutrienti (formato lungo, comodo in pandas/Power BI).
+Separatore ; e virgola decimale (Excel italiano).
 
 NOTE
-Valori nutrizionali stimati dagli ingredienti (tabelle CREA/USDA): orientativi, non analisi di laboratorio.
-Tutti i dati restano nel browser del telefono. Non caricare backup o PDF su GitHub.
+Valori per 100 g da tabelle CREA e USDA FoodData Central; prodotti confezionati = media di mercato: controlla l'etichetta dei tuoi.
+"Ricco di ferro" per gli alimenti = almeno 4,2 mg/100 g (30% del valore di riferimento UE); per le ricette = almeno 8 mg a porzione.
+Non caricare backup o PDF su GitHub.

@@ -11,15 +11,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700;800&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <title>LAPAPPA · Beccate sto piatto</title>
-<link rel="stylesheet" href="lapappa.css?v=22">
+<link rel="stylesheet" href="lapappa.css?v=23">
 </head>
 <body>
 <div class="shell">
 <header>
-  <div class="moonrow" aria-hidden="true">☽ ◯ ☾ &nbsp; 🌙 &nbsp; ☽𖦹☾ &nbsp; 🌕 &nbsp; ☽ ◯ ☾</div>
   <div class="brandwrap">
     <img src="lapappa-logo-v122.png" alt="Logo LAPAPPA" class="brand-logo">
-    <div><h1>LAPAPPA</h1><p>La foresta sa. Il gatto nero giudica. Tu pappi.</p></div>
+    <h1>LAPAPPA <span class="moon-mark" aria-hidden="true"><span>☽</span><span>𖦹</span><span>☾</span></span></h1>
   </div>
 </header>
 <nav id="nav" aria-label="Sezioni"></nav>
@@ -45,8 +44,8 @@
     <details id="marketGuide"><summary>Ingredienti che ti piacciono</summary><p>Tofu normale, seta e affumicato · miso · shiitake, wood ear e funghi freschi · udon e noodles · riso · latte di cocco · seitan · tortellini veg · affettati vegetali · cicoria · lattuga · zucca · cetrioli · avocado · Wasa · gallette · latte di soia al cioccolato/proteico · barbecue affumicata · soia · teriyaki · sriracha · maionese veg.</p><p class="muted">Puoi aggiungere anche pak choi, germogli, alghe, zenzero, tofu skin, daikon, soba e cavolo cinese.</p></details>
   </div>
   <div class="card">
-    <label for="foodName">Ingrediente</label><input id="foodName" placeholder="Es. tofu" list="ingredientNames" autocomplete="off">
-    <datalist id="ingredientNames"></datalist>
+    <label for="foodName">Ingrediente</label><input id="foodName" placeholder="Cerca: tofu, ceci, spinaci…">
+    <div id="foodInfo"></div>
     <div class="grid"><div><label for="foodQty">Quantità</label><input id="foodQty" inputmode="decimal" placeholder="Es. 400"></div><div><label for="foodUnit">Unità</label><select id="foodUnit"><option>g</option><option>ml</option><option>pz</option></select></div></div>
     <label for="foodDate">Scadenza (facoltativa)</label><input type="date" id="foodDate">
     <button class="action" type="button" onclick="addFood()">+ Metti sullo scaffale</button>
@@ -59,7 +58,7 @@
   <dialog id="foodDialog" class="sheet">
     <form method="dialog" id="foodEditForm">
       <h3>🪶 Modifica ingrediente</h3>
-      <label for="editName">Ingrediente</label><input id="editName" list="ingredientNames" required>
+      <label for="editName">Ingrediente</label><input id="editName" placeholder="Cerca alimento…">
       <div class="grid"><div><label for="editQty">Quantità</label><input id="editQty" inputmode="decimal"></div><div><label for="editUnit">Unità</label><select id="editUnit"><option>g</option><option>ml</option><option>pz</option></select></div></div>
       <label for="editDate">Scadenza</label><input type="date" id="editDate">
       <div class="sheet-actions"><button class="action" value="save" type="submit">Salva modifiche</button><button class="action secondary" value="cancel" type="button" id="editCancel">Annulla</button></div>
@@ -120,7 +119,7 @@
   <h2>🕯️ Oggi mi sento...</h2>
   <div class="card">
     <label for="logDate">Data</label><input id="logDate" type="date">
-    <label for="logTime">Momento</label><select id="logTime"><option>Mattina</option><option>Pranzo</option><option>Pomeriggio</option><option>Sera</option></select>
+    <label for="logClock">Ora</label><input id="logClock" type="time">
     <div class="grid">
       <div><label for="logHunger">Fame (1–10)</label><input id="logHunger" type="number" min="1" max="10" value="5"></div>
       <div><label for="logEnergy">Energia (1–10)</label><input id="logEnergy" type="number" min="1" max="10" value="5"></div>
@@ -128,6 +127,8 @@
       <div><label for="logStress">Stress (1–10)</label><input id="logStress" type="number" min="1" max="10" value="5"></div>
       <div><label for="logMood">Umore (1–10)</label><input id="logMood" type="number" min="1" max="10" value="6"></div>
     </div>
+    <label>Emozioni che senti adesso <small>(anche più di una)</small></label>
+    <div id="logEmotions" class="emotions"></div>
     <label for="logGlucose">Glicemia misurata, mg/dL (facoltativa)</label><input id="logGlucose" type="number" min="0" placeholder="Solo se misurata">
     <button class="action" type="button" onclick="addLog()">Registra</button>
     <ul id="logList"></ul>
@@ -152,17 +153,17 @@
 <section id="grimorio"><h2>📜 Il Grimorio</h2><div class="card" id="grimorioApp"></div></section>
 
 </main>
-<footer>LAPAPPA · v2.0 ☽𖦹☾ · I dati restano nel browser del tuo telefono · 🐦‍⬛</footer>
+<footer>LAPAPPA · v2.3 ☽𖦹☾ · I dati restano nel browser del tuo telefono · 🐦‍⬛</footer>
 </div>
-<script src="app.js?v=22"></script>
-<script src="ricette.js?v=22"></script>
-<script src="sleep.js?v=22"></script>
-<script src="cycle.js?v=22"></script>
-<script src="seasonality.js?v=22"></script>
-<script src="calendar.js?v=22"></script>
-<script src="bonanza.js?v=22"></script>
-<script src="wellbeing.js?v=22"></script>
-<script src="panoramica.js?v=22"></script>
-<script src="grimorio.js?v=22"></script>
+<script src="ricette.js?v=23"></script>
+<script src="app.js?v=23"></script>
+<script src="sleep.js?v=23"></script>
+<script src="cycle.js?v=23"></script>
+<script src="seasonality.js?v=23"></script>
+<script src="calendar.js?v=23"></script>
+<script src="bonanza.js?v=23"></script>
+<script src="wellbeing.js?v=23"></script>
+<script src="panoramica.js?v=23"></script>
+<script src="grimorio.js?v=23"></script>
 </body>
 </html>
